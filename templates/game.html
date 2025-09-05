@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Flask Mario Clone</title>
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3/dist/phaser.min.js"></script>
+    <style>
+      body {
+          font-family: 'Arial', sans-serif;
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          margin: 0;
+          padding: 20px;
+          min-height: 100vh;
+          color: white;
+      }
+      
+      .container {
+          max-width: 900px;
+          margin: 0 auto;
+          background: rgba(255, 255, 255, 0.1);
+          border-radius: 20px;
+          padding: 30px;
+          backdrop-filter: blur(10px);
+          box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      }
+      
+      h1 {
+          text-align: center;
+          font-size: 2.5em;
+          margin-bottom: 30px;
+          text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+      }
+      
+      .ranking-table {
+          width: 100%;
+          border-collapse: collapse;
+          margin: 20px 0;
+          background: rgba(255, 255, 255, 0.1);
+          border-radius: 15px;
+          overflow: hidden;
+      }
+      
+      .ranking-table th,
+      .ranking-table td {
+          padding: 15px;
+          text-align: center;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      }
+      
+      .ranking-table th {
+          background: rgba(255, 255, 255, 0.2);
+          font-weight: bold;
+          font-size: 1.1em;
+      }
+      
+      .ranking-table tr:nth-child(1) {
+          background: linear-gradient(45deg, #ffd700, #ffed4e);
+          color: #333;
+      }
+      
+      .ranking-table tr:nth-child(2) {
+          background: linear-gradient(45deg, #c0c0c0, #e5e5e5);
+          color: #333;
+      }
+      
+      .ranking-table tr:nth-child(3) {
+          background: linear-gradient(45deg, #cd7f32, #daa520);
+          color: #333;
+      }
+      
+      .start-button {
+          display: block;
+          width: 200px;
+          margin: 30px auto;
+          padding: 15px 30px;
+          font-size: 1.2em;
+          background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+          color: white;
+          border: none;
+          border-radius: 50px;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          text-decoration: none;
+          text-align: center;
+      }
+      
+      .start-button:hover {
+          transform: translateY(-3px);
+          box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+      }
+      
+      .no-records {
+          text-align: center;
+          font-size: 1.2em;
+          color: rgba(255, 255, 255, 0.8);
+          margin: 40px 0;
+      }
+      
+      .player-count-badge {
+          display: inline-block;
+          padding: 5px 10px;
+          border-radius: 20px;
+          font-size: 0.8em;
+          font-weight: bold;
+      }
+      
+      .player-count-1 {
+          background: #3498db;
+      }
+      
+      .player-count-2 {
+          background: #e74c3c;
+      }
+      .touch-controls {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 12px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 16px;
+        pointer-events: none; /* 子要素のみ受け取る */
+      }
+      .touch-controls .group {
+        display: flex;
+        gap: 12px;
+      }
+      .touch-btn {
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        background: rgba(0,0,0,0.5);
+        color: #fff;
+        font-size: 18px;
+        border: 2px solid rgba(255,255,255,0.6);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        user-select: none;
+        -webkit-user-select: none;
+        pointer-events: auto; /* タッチ受付 */
+        touch-action: none;
+      }
+      .touch-btn:active {
+        background: rgba(255,255,255,0.2);
+      }
+      /* 画面幅が狭い場合は少し縮小 */
+      @media (max-width: 480px) {
+        .touch-btn {
+          width: 56px;
+          height: 56px;
+          font-size: 16px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="start-screen">
+      <h1>ゲームスタート</h1>
+      <p>プレイヤー人数を選択してください</p>
+      <label
+        ><input type="radio" name="playerCount" value="1" checked /> 1人</label
+      >
+      <label><input type="radio" name="playerCount" value="2" /> 2人</label>
+      <br /><br />
+      <p>ユーザー名を入力してください</p>
+      <input id="userNameInput" type="text" placeholder="ユーザー名" maxlength="20" />
+      <br /><br />
+      <button id="startBtn">Start</button>
+    </div>
+
+    <div id="game" style="display: none"></div>
+
+    <button
+      style="position: absolute; top: 10px; left: 700px"
+      onclick="location.href='/'"
+    >
+      タイトルに戻る
+    </button>
+
+    <!-- モバイル用タッチコントローラ -->
+    <div id="touchControls" class="touch-controls" style="display:none;">
+      <div class="group">
+        <div id="btnLeft" class="touch-btn">A</div>
+        <div id="btnRight" class="touch-btn">D</div>
+      </div>
+      <div class="group">
+        <div id="btnUp" class="touch-btn">W</div>
+      </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='game.js') }}"></script>
+  </body>
+</html>
