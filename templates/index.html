@@ -1,159 +1,155 @@
 <!DOCTYPE html>
 <html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>マリオゲーム - ランキング</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
     <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            margin: 0;
-            padding: 20px;
-            min-height: 100vh;
-            color: white;
-        }
-        
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            padding: 30px;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-        }
-        
-        h1 {
-            text-align: center;
-            font-size: 2.5em;
-            margin-bottom: 30px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-        }
-        
-        .ranking-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            overflow: hidden;
-        }
-        
-        .ranking-table th,
-        .ranking-table td {
-            padding: 15px;
-            text-align: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-        }
-        
-        .ranking-table th {
-            background: rgba(255, 255, 255, 0.2);
-            font-weight: bold;
-            font-size: 1.1em;
-        }
-        
-        .ranking-table tr:nth-child(1) {
-            background: linear-gradient(45deg, #ffd700, #ffed4e);
-            color: #333;
-        }
-        
-        .ranking-table tr:nth-child(2) {
-            background: linear-gradient(45deg, #c0c0c0, #e5e5e5);
-            color: #333;
-        }
-        
-        .ranking-table tr:nth-child(3) {
-            background: linear-gradient(45deg, #cd7f32, #daa520);
-            color: #333;
-        }
-        
-        .start-button {
-            display: block;
-            width: 200px;
-            margin: 30px auto;
-            padding: 15px 30px;
-            font-size: 1.2em;
-            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
-            color: white;
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            text-align: center;
-        }
-        
-        .start-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-        }
-        
-        .no-records {
-            text-align: center;
-            font-size: 1.2em;
-            color: rgba(255, 255, 255, 0.8);
-            margin: 40px 0;
-        }
-        
-        .player-count-badge {
-            display: inline-block;
-            padding: 5px 10px;
-            border-radius: 20px;
-            font-size: 0.8em;
-            font-weight: bold;
-        }
-        
-        .player-count-1 {
-            background: #3498db;
-        }
-        
-        .player-count-2 {
-            background: #e74c3c;
-        }
+      body {
+        font-family: 'Arial', sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        margin: 0;
+        padding: 20px;
+        min-height: 100vh;
+        color: white;
+      }
+
+      .container {
+        max-width: 900px;
+        margin: 0 auto;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        padding: 30px;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      }
+
+      h1 {
+        text-align: center;
+        font-size: 2.5em;
+        margin-bottom: 30px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+      }
+
+      .ranking-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 15px;
+        overflow: hidden;
+      }
+
+      .ranking-table th,
+      .ranking-table td {
+        padding: 15px;
+        text-align: center;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .ranking-table th {
+        background: rgba(255, 255, 255, 0.2);
+        font-weight: bold;
+        font-size: 1.1em;
+      }
+
+      .ranking-table tr:nth-child(1) {
+        background: linear-gradient(45deg, #ffd700, #ffed4e);
+        color: #333;
+      }
+
+      .ranking-table tr:nth-child(2) {
+        background: linear-gradient(45deg, #c0c0c0, #e5e5e5);
+        color: #333;
+      }
+
+      .ranking-table tr:nth-child(3) {
+        background: linear-gradient(45deg, #cd7f32, #daa520);
+        color: #333;
+      }
+
+      .start-button {
+        display: block;
+        width: 200px;
+        margin: 30px auto;
+        padding: 15px 30px;
+        font-size: 1.2em;
+        background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+        color: white;
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        text-align: center;
+      }
+
+      .start-button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+      }
+
+      .no-records {
+        text-align: center;
+        font-size: 1.2em;
+        color: rgba(255, 255, 255, 0.8);
+        margin: 40px 0;
+      }
+
+      .player-count-badge {
+        display: inline-block;
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 0.8em;
+        font-weight: bold;
+      }
+
+      .player-count-1 {
+        background: #3498db;
+      }
+
+      .player-count-2 {
+        background: #e74c3c;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="container">
-        <h1>🏆 ランキング 🏆</h1>
-        
-        {% if rankings %}
-            <table class="ranking-table">
-                <thead>
-                    <tr>
-                        <th>順位</th>
-                        <th>ユーザー名</th>
-                        <th>スコア</th>
-                        <th>プレイ時間</th>
-                        <th>プレイヤー数</th>
-                        <th>記録日時</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for ranking in rankings %}
-                    <tr>
-                        <td>{{ loop.index }}</td>
-                        <td>{{ ranking.userName }}</td>
-                        <td>{{ ranking.score }}</td>
-                        <td>{{ ranking.playTime }}秒</td>
-                        <td>
-                            <span class="player-count-badge player-count-{{ ranking.playerCount }}">
-                                {{ ranking.playerCount }}P
-                            </span>
-                        </td>
-                        <td>{{ ranking.timestamp }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        {% else %}
-            <div class="no-records">
-                まだ記録がありません。<br>
-                ゲームをプレイして記録を作りましょう！
-            </div>
-        {% endif %}
-        
-        <a href="/start" class="start-button">ゲームを始める</a>
+      <h1>🏆 ランキング 🏆</h1>
+
+      {% if rankings %}
+      <table class="ranking-table">
+        <thead>
+          <tr>
+            <th>順位</th>
+            <th>ユーザー名</th>
+            <th>スコア</th>
+            <th>プレイ時間</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for ranking in rankings %}
+          <tr>
+            <td>{{ loop.index }}</td>
+            <td>{{ ranking.userName }}</td>
+            <td>{{ ranking.score }}</td>
+            <td>{{ ranking.playTime }}秒</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <div class="no-records">
+        まだ記録がありません。<br />
+        ゲームをプレイして記録を作りましょう！
+      </div>
+      {% endif %}
+
+      <a href="/start" class="start-button">ゲームを始める</a>
     </div>
-</body>
+  </body>
 </html>
