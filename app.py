@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, jsonify
 import json
 import os
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 import sqlite3
 import traceback
 
@@ -54,8 +54,21 @@ def init_db():
 if not init_db():
     print("警告: データベース初期化に失敗しました")
 
+# --- ルーティング ---
+
+# ルート（最初に表示する画面）→ start.html
 @app.route("/")
-def index_root():
+def start():
+    return render_template("start.html")
+
+# ゲーム画面
+@app.route("/game")
+def game():
+    return render_template("game.html")
+
+# ランキング画面（ゲーム終了後に表示）
+@app.route("/index")
+def index_page():
     try:
         conn = get_db_connection()
         if conn is None:
@@ -81,14 +94,7 @@ def index_root():
         print(f"ランキング取得エラー: {e}")
         return render_template("index.html", rankings=[])
 
-@app.route("/start")
-def start():
-    return render_template("start.html")
-
-@app.route("/game")
-def game():
-    return render_template("game.html")
-
+# スコア送信API
 @app.route("/submit_score", methods=['POST'])
 def submit_score():
     try:
@@ -99,7 +105,7 @@ def submit_score():
         score = int(data.get('score', 0) or 0)
         time_left = int(data.get('timeLeft', 0) or 0)
         player_count = int(data.get('playerCount', 1) or 1)
-        user_name = (data.get('userName') or '').strip() or 'Anonymous'
+        user_name = (data.get('userName') or '').strip()[:20] or 'Anonymous'
 
         play_time = 60 - time_left
         
@@ -109,9 +115,13 @@ def submit_score():
         if conn is None:
             return jsonify({'success': False, 'error': 'データベース接続エラー'}), 500
             
+        # タイムスタンプをJSTに固定
+        jst = timezone(timedelta(hours=9))
+        now_str = datetime.now(jst).strftime('%Y-%m-%d %H:%M:%S')
+
         conn.execute(
             "INSERT INTO rankings (user_name, score, play_time, player_count, timestamp) VALUES (?, ?, ?, ?, ?)",
-            (user_name, score, play_time, player_count, datetime.now().strftime('%Y-%m-%d %H:%M:%S')),
+            (user_name, score, play_time, player_count, now_str),
         )
         conn.commit()
         conn.close()
