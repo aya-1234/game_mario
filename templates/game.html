@@ -147,13 +147,16 @@
       >
       <label><input type="radio" name="playerCount" value="2" /> 2人</label>
       <br /><br /> -->
-      <p>ユーザー名を入力してください</p>
-      <input
-        id="userNameInput"
-        type="text"
-        placeholder="ユーザー名"
-        maxlength="20"
-      />
+      <form action="/game" method="get">
+        <p>ユーザー名を入力してください</p>
+        <input
+          id="userNameInput"
+          type="text"
+          placeholder="ユーザー名"
+          maxlength="20"
+          required
+        />
+      </form>
       <br /><br />
       <button id="startBtn">Start</button>
       <h2>遊び方</h2>
